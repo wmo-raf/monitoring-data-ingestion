@@ -9,6 +9,8 @@ services:
     environment:
       - CDS_API_KEY=${CDS_API_KEY}
       - SHP_CLIP_PATH=/home/node/app/src/shp/africa.shp
+      - MINUTES_BEFORE_RETRY=${MINUTES_BEFORE_RETRY}
+      - MINUTES_BEFORE_TIMEOUT=${MINUTES_BEFORE_TIMEOUT}
     volumes:
       - ${DATA_VOLUME}:/home/node/app/public/mdi
       - ${DATA_STATE_VOLUME}:/home/node/app/src/state
