@@ -32,6 +32,7 @@ export async function forage(current_state, datasets) {
     ? Datetime.from(date).add({ months: 1 })
     : Datetime.from("1959-01-01");
   date = dt.to_iso_string();
+
   last_updated = await verify_update_needed(name, dt, last_updated);
 
   let metadatas = datasets.map((d) => typical_metadata(d, dt, shared_metadata));
@@ -62,7 +63,7 @@ export async function forage(current_state, datasets) {
       let output = output_path(
         dataset.output_dir,
         dt.to_iso_string(),
-        dataset.filename
+        dataset.layer_name
       );
       let record_number =
         variables.findIndex((v) => v === dataset.variable) + 1;
@@ -72,12 +73,22 @@ export async function forage(current_state, datasets) {
           clip_by: SHP_CLIP_PATH,
         });
         const out_grib = output + ".grib";
-        await grib1_anomaly(normal, input, out_grib, {
+        await grib1_anomaly(
+          normal,
+          input,
+          output,
+          {
+            record_number,
+            clip_by: SHP_CLIP_PATH,
+          },
+          true
+        );
+      } else {
+        await grib1(input, output, {
           record_number,
           clip_by: SHP_CLIP_PATH,
+          asGeoTiff: true,
         });
-      } else {
-        await grib1(input, output, { record_number, clip_by: SHP_CLIP_PATH });
       }
     })
   );
