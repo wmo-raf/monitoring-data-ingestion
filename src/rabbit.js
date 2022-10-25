@@ -35,11 +35,14 @@ let datasets = await Promise.all(
     let output_dir = join(parent_output_dir, filename);
     let state_file = join(datasets_state_dir, `${filename}.json`);
     await mkdir_p(output_dir);
+    // replace all hyphens with underscore for gsky file pattern
+    let layer_name = filename.replace(/-/g, '_');
     return {
       output_dir,
       ...(await import(join(datasets_dir, file))),
       state_file,
       filename,
+      layer_name,
       current_state: await read_json(state_file, {}),
     };
   })

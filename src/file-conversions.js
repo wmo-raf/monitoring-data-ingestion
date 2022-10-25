@@ -24,12 +24,26 @@ export async function grib1_normal(count, input, output, options = {}) {
   return output;
 }
 
-export async function grib1_anomaly(normal, input, output, options = {}) {
+export async function grib1_anomaly(
+  normal,
+  input,
+  output,
+  options = {},
+  asGeoTiff = false
+) {
   let in_temp_file = join(temp_cache_dir, uuidv4());
   in_temp_file = await grib1_to_file(input, in_temp_file, options);
 
-  // subtract normal from climatology mean
-  await cdo_sub(in_temp_file, normal, output);
+  if (!asGeoTiff) {
+    // subtract normal from climatology mean
+    return await cdo_sub(in_temp_file, normal, output);
+  }
+
+  const out = await cdo_sub(in_temp_file, normal);
+
+  const tiff_out = await grib_to_tiff(out);
+
+  await rename(tiff_out, output + ".tif");
 }
 
 export async function grib2(input, output, options = { match: ".*" }) {
@@ -43,18 +57,18 @@ export async function grib2_acc(input, options = {}) {
 async function grib_to_tiff(input) {
   let out_file = join(temp_cache_dir, uuidv4()) + ".tif";
 
-  const gdalwarp_translate_args = [
+  const gdal_translate_args = [
     "-co",
-    "COMPRESS=LERC_DEFLATE",
+    "COMPRESS=LZW",
     "-co",
-    "MAX_Z_ERROR=0.01",
+    "predictor=3",
     "-ot",
     "Float32",
     input,
     out_file,
   ];
 
-  await spawn_cmd("gdal_translate", gdalwarp_translate_args);
+  await spawn_cmd("gdal_translate", gdal_translate_args);
 
   return out_file;
 }
@@ -131,7 +145,7 @@ async function grib1_to_file(input, output, options = {}) {
   }
 
   if (asGeoTiff) {
-    const out_file = output + ".geotiff";
+    const out_file = output + ".tif";
     await rename(out_temp_file, out_file);
     return out_file;
   } else {
@@ -209,7 +223,7 @@ async function cdo_sub(ifile1, ifile2, output) {
     out_file = join(temp_cache_dir, uuidv4());
   }
 
-  const cdo_subtrace_args = ["sub", ifile2, ifile1, out_file];
+  const cdo_subtrace_args = ["sub", ifile1, ifile2, out_file];
 
   await spawn_cmd("cdo", cdo_subtrace_args);
 
