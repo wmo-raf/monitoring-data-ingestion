@@ -1,0 +1,11 @@
+/node_modules/
+/dist/
+/public/tera/
+/src/atomic/
+/src/cache/
+/src/state/
+
+.DS_Store
+
+# Environmental variables loaded with dotenv
+.env

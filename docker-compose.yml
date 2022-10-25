@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  mdi:
+    image: africahazardswatch/mdi:latest
+    container_name: mdi
+    build: .
+    restart: ${RESTART_POLICY}
+    environment:
+      - CDS_API_KEY=${CDS_API_KEY}
+      - SHP_CLIP_PATH=/home/node/app/src/africa.shp
+    volumes:
+      - ${DATA_VOLUME}:/home/node/app/public/mdi
+      - ${DATA_STATE_VOLUME}:/home/node/app/src/state
+      - ${}
+
