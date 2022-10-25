@@ -51,7 +51,7 @@ export async function grib2(input, output, options = { match: ".*" }) {
 }
 
 export async function grib2_acc(input, options = {}) {
-  return await gfs_combine_grib(input, options, (a, b) => a - b);
+  return await combine_grib(input, options, (a, b) => a - b);
 }
 
 async function grib_to_tiff(input) {
@@ -155,7 +155,7 @@ async function grib1_to_file(input, output, options = {}) {
   }
 }
 
-export async function gfs_combine_grib(files, options = {}) {
+export async function combine_grib(files, options = {}) {
   let out_file = join(temp_cache_dir, uuidv4());
 
   const cdo_sub_args = ["sub", files[0], files[1], out_file];
