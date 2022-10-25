@@ -12,4 +12,5 @@ services:
     volumes:
       - ${DATA_VOLUME}:/home/node/app/public/mdi
       - ${DATA_STATE_VOLUME}:/home/node/app/src/state
+      - ${DATA_CACHE_VOLUME}:/home/node/app/src/cache
 
