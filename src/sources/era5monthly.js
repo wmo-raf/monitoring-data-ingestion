@@ -6,6 +6,7 @@ import {
   run_all,
   perm_cache_dir,
   typical_metadata,
+  send_ingest_command,
 } from "../utility.js";
 import { access, rm } from "fs/promises";
 import { join } from "path";
@@ -16,6 +17,10 @@ import { v4 as uuidv4 } from "uuid";
 const name = "reanalysis-era5-single-levels-monthly-means";
 
 const SHP_CLIP_PATH = process.env.SHP_CLIP_PATH;
+
+const GSKY_GFS_INGEST_WEBHOOK_ENDPOINT =
+  process.env.GSKY_GFS_INGEST_WEBHOOK_ENDPOINT;
+const GSKY_WEHBOOK_SECRET = process.env.GSKY_WEHBOOK_SECRET;
 
 const shared_metadata = {
   width: 1440,
@@ -93,6 +98,15 @@ export async function forage(current_state, datasets) {
     })
   );
   await rm(input);
+
+  // send gsky ingest command on successfull download
+  if (GSKY_GFS_INGEST_WEBHOOK_ENDPOINT && GSKY_WEHBOOK_SECRET) {
+    console.log(`Sending Ingest Command for time ${dt.to_iso_string()}`);
+    await send_ingest_command(
+      GSKY_GFS_INGEST_WEBHOOK_ENDPOINT,
+      GSKY_WEHBOOK_SECRET
+    );
+  }
 
   return { metadatas, new_state: { date, last_updated, normals } };
 }
