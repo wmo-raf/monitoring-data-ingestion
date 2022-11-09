@@ -11,6 +11,8 @@ services:
       - SHP_CLIP_PATH=/home/node/app/src/shp/africa.shp
       - MINUTES_BEFORE_RETRY=${MINUTES_BEFORE_RETRY}
       - MINUTES_BEFORE_TIMEOUT=${MINUTES_BEFORE_TIMEOUT}
+      - GSKY_ERA5_INGEST_WEBHOOK_ENDPOINT=${GSKY_ERA5_INGEST_WEBHOOK_ENDPOINT}
+      - GSKY_WEHBOOK_SECRET=${GSKY_WEHBOOK_SECRET}
     volumes:
       - ${DATA_VOLUME}:/home/node/app/public/mdi
       - ${DATA_STATE_VOLUME}:/home/node/app/src/state
