@@ -18,3 +18,7 @@ services:
       - ${DATA_STATE_VOLUME}:/home/node/app/src/state
       - ${DATA_CACHE_VOLUME}:/home/node/app/src/cache
 
+networks:
+    default:
+      name:  ${AHW_DOCKER_NETWORK}
+      external: true
