@@ -21,6 +21,8 @@ const SHP_CLIP_PATH = process.env.SHP_CLIP_PATH;
 const GSKY_ERA5_INGEST_WEBHOOK_ENDPOINT =
   process.env.GSKY_ERA5_INGEST_WEBHOOK_ENDPOINT;
 const GSKY_WEHBOOK_SECRET = process.env.GSKY_WEHBOOK_SECRET;
+const GSKY_ERA5_INGEST_SCRIPT_FILENAME =
+  process.env.GSKY_ERA5_INGEST_SCRIPT_FILENAME;
 
 const shared_metadata = {
   width: 1440,
@@ -100,11 +102,21 @@ export async function forage(current_state, datasets) {
   await rm(input);
 
   // send gsky ingest command on successfull download
-  if (GSKY_ERA5_INGEST_WEBHOOK_ENDPOINT && GSKY_WEHBOOK_SECRET) {
+  if (
+    GSKY_ERA5_INGEST_WEBHOOK_ENDPOINT &&
+    GSKY_WEHBOOK_SECRET &&
+    GSKY_ERA5_INGEST_SCRIPT_FILENAME
+  ) {
     console.log(`Sending Ingest Command for time ${dt.to_iso_string()}`);
+
+    const payload = {
+      filename: `-f ${GSKY_ERA5_INGEST_SCRIPT_FILENAME}`,
+    };
+
     await send_ingest_command(
       GSKY_ERA5_INGEST_WEBHOOK_ENDPOINT,
-      GSKY_WEHBOOK_SECRET
+      GSKY_WEHBOOK_SECRET,
+      payload
     );
   }
 

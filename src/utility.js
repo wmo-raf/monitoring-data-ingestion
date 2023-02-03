@@ -148,11 +148,7 @@ function get_signature(body, secret) {
   return hash;
 }
 
-export function send_ingest_command(endpoint, secret) {
-  const payload = {
-    timestamp: new Date().getTime(),
-  };
-
+export function send_ingest_command(endpoint, secret, payload) {
   const signature = get_signature(payload, secret);
 
   return axios
