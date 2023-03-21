@@ -4,7 +4,7 @@ USER root
 
 ENV DEBIAN_FRONTEND=noninteractive 
 
-RUN apt-get update && apt-get install -y wget g++ gfortran make cdo cron
+RUN apt-get update && apt-get install -y wget g++ gfortran make cmake cdo cron
 
 COPY ./build_wgrib.sh /
 RUN /build_wgrib.sh
